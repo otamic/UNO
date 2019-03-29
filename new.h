@@ -9,6 +9,7 @@
 #include <zconf.h>
 
 struct Class {
+    const void * obj;
     size_t size;
     void * (* ctor) (void * self, va_list * app);
     void * (* dtor) (void * self);

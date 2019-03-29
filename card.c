@@ -15,7 +15,7 @@ static void * Card_ctor (void * _self, va_list * app) {
 }
 
 static const struct Class _Card = {
-        sizeof(struct Card), Card_ctor, 0
+        & _Card, sizeof(struct Card), Card_ctor, 0
 };
 
 const void * Card = & _Card;
@@ -25,7 +25,7 @@ static void * NumberCard_ctor (void * _self, va_list * app) {
 }
 
 static const struct Class _NumberCard = {
-        sizeof(struct Card), NumberCard_ctor, 0
+        & _NumberCard, sizeof(struct Card), NumberCard_ctor, 0
 };
 
 const void * NumberCard = & _NumberCard;
@@ -38,7 +38,7 @@ static void * SkillCard_ctor (void * _self, va_list * app) {
 }
 
 static const struct Class _SkillCard = {
-        sizeof(struct SkillCard), SkillCard_ctor, 0
+        & _SkillCard, sizeof(struct SkillCard), SkillCard_ctor, 0
 };
 
 const void * SkillCard = & _SkillCard;
