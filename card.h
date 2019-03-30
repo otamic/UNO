@@ -5,6 +5,8 @@
 #ifndef UNO_CARD_H
 #define UNO_CARD_H
 
+#define UNO_CARDS_NUMBER 112
+
 extern const void * Card;
 extern const void * NumberCard;
 extern const void * SkillCard;
@@ -27,5 +29,7 @@ struct SkillCard {
     const struct Card _;
     enum Skill skill;
 };
+
+void setColor (void * self, enum Color color);
 
 #endif //UNO_CARD_H
