@@ -1,13 +1,28 @@
+#define DEBUG
+
 #include <stdio.h>
 #include "card.h"
 #include "new.h"
+#include "gameplay.h"
+#include "player.h"
+
+#define NUM_PLAYERS 5
 
 int main() {
-    void * cardA = new(NumberCard, one, red);
-    void * cardB = new(SkillCard, one, red, addTwo);
 
-    printf("%d %d", ((struct NumberCard *)cardA)->_.number, ((struct NumberCard *)cardA)->_.color);
+    int run = 1;
+    createCards();
+    void * gameboard = new(Gameboard, NUM_PLAYERS);
+    start(gameboard);
 
-    delete(cardA);
+    while (run) {
+        run = addCard(gameboard, hand(callPlayers(gameboard), gameboard));
+#ifdef DEBUG
+        if (run)
+            show(gameboard);
+#endif
+    }
+    delete(gameboard);
+
     return 0;
 }

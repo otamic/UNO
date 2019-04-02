@@ -8,7 +8,7 @@
 
 void * new (const void * _class, ...) {
     const struct Class * class = _class;
-    void * p = calloc(1, class->size);
+    void * p = malloc(class->size);
 
     assert(p);
     * (const struct Class **) p = class;
