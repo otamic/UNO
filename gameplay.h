@@ -25,7 +25,6 @@ struct Gameboard {
 void start (void * self);
 void * callPlayers (void * self);
 void addCard (void * self, void * card);
-void randCards (void * self);
 int gameover (void * self);
 
 static void ddirection (void * self);
@@ -33,6 +32,9 @@ static void next (void * self);
 static void addTop (void * self, void * card);
 static void addRear (void * self, void * card);
 static void drawCard (void * self);
+
+static void desort (int * array, int count);
+void show (void * self);
 
 
 #endif //UNO_GAMEPLAY_H

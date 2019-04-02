@@ -36,7 +36,8 @@ void spush (void * _self, void * _card) {
 void * stop (const void * _self) {
     const struct CardStack * self = _self;
 
-    assert(self->top != -1);
+    if (self->top == -1)
+        return NULL;
     return self->cards[self->top];
 }
 

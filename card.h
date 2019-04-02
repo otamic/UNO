@@ -10,8 +10,9 @@
 extern const void * Card;
 extern const void * NumberCard;
 extern const void * SkillCard;
+extern void ** allCards;
 
-enum Color { blue = 0, green, red, yellow, nulColor };
+enum Color { blue = 0, green, red, yellow, nulColor, rdmColor };
 enum Number { zero = 0, one, two, three, four, five, six, seven, eight, nine, nulNumber };
 enum Skill { skip = 0, reverse, addTwo, addFour, wild };
 
@@ -31,5 +32,9 @@ struct SkillCard {
 };
 
 void setColor (void * self, enum Color color);
+void showCard (void * card);
+static void printColor (void * card);
+static void printNumber (void * card);
+void createCards();
 
 #endif //UNO_CARD_H

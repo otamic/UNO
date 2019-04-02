@@ -2,6 +2,12 @@
 // Created by 冯彦澄 on 2019-03-29.
 //
 
+#ifndef DEBUG
+#define DEBUG
+#endif
+
+#include <stdio.h>
+
 #include <stdarg.h>
 #include <stdlib.h>
 #include "gameplay.h"
@@ -23,8 +29,9 @@ static void * Gameboard_ctor (void * _self, va_list * app) {
     self->restCards = UNO_CARDS_NUMBER;
 
     self->players = (void **) malloc(self->playerNum * sizeof(void *));
-    for (i = 0; i < self->playerNum; i++)
-        self->players[i] = new(Player);
+    self->players[0] = new(Player, man, 0);
+    for (i = 1; i < self->playerNum; i++)
+        self->players[i] = new(Player, computer, i);
 
     return self;
 }
@@ -63,7 +70,8 @@ void addCard (void * _self, void * _card) {
         next(self);
     }
     else {
-        addRear(self, spop(self->cstack));
+        if (slength(self->cstack))
+            addRear(self, spop(self->cstack));
         addTop(self, card);
         if (card->obj == NumberCard) {
             next(self);
@@ -93,8 +101,6 @@ void addCard (void * _self, void * _card) {
     }
 }
 
-void randCards (void * self);
-
 int gameover (void * _self) {
     struct Gameboard * self = _self;
 
@@ -116,7 +122,7 @@ static void next (void * _self) {
         self->playerNow = (self->playerNow + 1) % self->playerNum;
     }
     else
-        self->playerNow = (self->playerNow - 1) % self->playerNum;
+        self->playerNow = (self->playerNow - 1 + self->playerNum) % self->playerNum;
 }
 
 static void addTop (void * _self, void * _card) {
@@ -171,9 +177,43 @@ static void drawCard (void * _self) {
 
 void start (void * _self) {
     struct Gameboard * self = _self;
-    int i, j;
+    int i, j, numList[UNO_CARDS_NUMBER];
+
+    for (i = 0; i < UNO_CARDS_NUMBER; i++)
+        numList[i] = i;
+    desort(numList, UNO_CARDS_NUMBER);
+    for (i = 0; i < UNO_CARDS_NUMBER; i++)
+        qpush(self->cqueue, allCards[numList[i]]);
 
     for (i = 0; i < self->playerNum; i++)
         for (j = 0; j < 7; j++)
             getCard(self->players[i], qpop(self->cqueue));
+}
+
+#define RAND_LOOP 10000
+#define RAND_CONSTANT_A 10
+
+static void desort (int * array, int count) {
+    srand(0);
+    int i, j, interval;
+    for (i = 0; i < RAND_LOOP; i++) {
+        interval = rand() % (rand() % RAND_CONSTANT_A + 1) + 1;
+        int loop = count - interval, mid = array[interval];
+        for (j = interval; j < loop; j += interval)
+            array[j] = array[j+interval];
+        array[j] = mid;
+    }
+    interval = array[0];
+    array[0] = array[count - 1];
+    array[count - 1] = interval;
+}
+
+void show (void * _self) {
+    struct Gameboard * self = _self;
+    int i;
+    for (i = 0; i < self->playerNum; i++)
+        printf("Player%d: %d\n", i, restCards(self->players[i]));
+    printf("Front card: ");
+    showCard(stop(self->cstack));
+    printf("\n\n");
 }

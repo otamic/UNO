@@ -7,7 +7,7 @@
 
 #include "card.h"
 
-#define MAX_CQUEUE_NUM UNO_CARDS_NUMBER * 2
+#define MAX_CQUEUE_NUM (UNO_CARDS_NUMBER * 2)
 
 extern const void * CardQueue;
 
