@@ -16,8 +16,7 @@ int main() {
     start(gameboard);
 
     while (run) {
-        addCard(gameboard, hand(callPlayers(gameboard), gameboard));
-        run = gameover(gameboard);
+        run = addCard(gameboard, hand(callPlayers(gameboard), gameboard));
 #ifdef DEBUG
         show(gameboard);
 #endif

@@ -24,8 +24,7 @@ struct Gameboard {
 
 void start (void * self);
 void * callPlayers (void * self);
-void addCard (void * self, void * card);
-int gameover (void * self);
+int addCard (void * self, void * card);
 
 static void ddirection (void * self);
 static void next (void * self);

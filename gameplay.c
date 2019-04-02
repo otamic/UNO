@@ -61,9 +61,17 @@ void * callPlayers (void * _self) {
     return self->players[self->playerNow];
 }
 
-void addCard (void * _self, void * _card) {
+int addCard (void * _self, void * _card) {
     struct Gameboard * self = _self;
     struct Class * card = _card;
+
+    if (restCards(callPlayers(self)) == 0) {
+        struct Player * player = callPlayers(self);
+#ifdef DEBUG
+        printf("Game over! The winner is player%d\n", player->id);
+#endif
+        return 0;
+    }
 
     if (_card == 0) {
         drawCard(self);
@@ -99,12 +107,7 @@ void addCard (void * _self, void * _card) {
             }
         }
     }
-}
-
-int gameover (void * _self) {
-    struct Gameboard * self = _self;
-
-    return restCards(callPlayers(self)) == 0 ? 0 : 1;
+    return 1;
 }
 
 static void ddirection (void * _self) {
@@ -141,7 +144,7 @@ static void addRear (void * _self, void * _card) {
 
 static void drawCard (void * _self) {
     struct Gameboard * self = _self;
-    struct Player * player = self->players[self->playerNow];
+    struct Player * player = callPlayers(self);
     struct CardQueue * cardQueue = self->cqueue;
     struct CardStack * cardStack = self->cstack;
 
