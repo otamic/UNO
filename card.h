@@ -32,6 +32,7 @@ struct SkillCard {
 };
 
 void setColor (void * self, enum Color color);
+void setNumber (void * self, enum Number number);
 void showCard (void * card);
 static void printColor (void * card);
 static void printNumber (void * card);

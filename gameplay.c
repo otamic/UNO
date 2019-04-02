@@ -78,9 +78,17 @@ int addCard (void * _self, void * _card) {
         next(self);
     }
     else {
-        if (slength(self->cstack))
-            addRear(self, spop(self->cstack));
-        addTop(self, card);
+        if (slength(self->cstack)) {
+            struct Card * frontNow = stop(self->cstack);
+            if (frontNow->class == NumberCard ||
+               (frontNow->class == SkillCard &&
+               ((struct SkillCard *) frontNow)->skill != addFour && ((struct SkillCard *) frontNow)->skill != addTwo
+                       && frontNow->number == nulNumber)) {
+               qpush(self->cqueue, spop(self->cstack));
+            }
+        }
+        //addTop(self, card);
+        spush(self->cstack, card);
         if (card->obj == NumberCard) {
             next(self);
         }
@@ -128,54 +136,41 @@ static void next (void * _self) {
         self->playerNow = (self->playerNow - 1 + self->playerNum) % self->playerNum;
 }
 
-static void addTop (void * _self, void * _card) {
-    struct Gameboard * self = _self;
-    struct Card * card = _card;
-
-    spush(self->cstack, card);
-}
-
-static void addRear (void * _self, void * _card) {
-    struct Gameboard * self = _self;
-    struct Card * card = _card;
-
-    qpush(self->cqueue, card);
-}
-
 static void drawCard (void * _self) {
     struct Gameboard * self = _self;
     struct Player * player = callPlayers(self);
     struct CardQueue * cardQueue = self->cqueue;
     struct CardStack * cardStack = self->cstack;
+    struct Card * tcard = stop(cardStack);
 
-    while (1) {
-        struct Class * card = stop(self->cstack);
+    while (slength(cardStack)) {
+        struct Card * card = spop(cardStack);
         int i;
 
-        if (card->obj == NumberCard) {
-            getCard(player, qpop(cardQueue));
-        } else {
+        if (card->class == SkillCard) {
             struct SkillCard * skillCard = (struct SkillCard *) card;
             switch (skillCard->skill) {
-                case skip:
-                case reverse:
-                case wild:
-                    getCard(player, qpop(cardQueue));
-                    break;
                 case addTwo:
-                    for (i = 0; i < 2; i++)
-                        getCard(player, qpop(cardQueue));
+                    if (card->number == nulNumber) {
+                        setNumber(card, zero);
+                        for (i = 0; i < 2; i++)
+                            getCard(player, qpop(cardQueue));
+                    }
                     break;
                 case addFour:
-                    for (i = 0; i < 4; i++)
-                        getCard(player, qpop(cardQueue));
+                    if (card->number == nulNumber) {
+                        setNumber(card, zero);
+                        for (i = 0; i < 4; i++)
+                            getCard(player, qpop(cardQueue));
+                    }
+                    break;
+                default:
                     break;
             }
         }
-
-        if (slength(cardStack) == 1)
-            break;
     }
+    spush(cardStack, tcard);
+    getCard(player, qpop(cardQueue));
 }
 
 void start (void * _self) {

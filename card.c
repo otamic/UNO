@@ -171,3 +171,8 @@ void setColor (void * _self, enum Color color) {
     struct Card * self = _self;
     self->color = color;
 }
+
+void setNumber (void * _self, enum Number number) {
+    struct Card * self = _self;
+    self->number = number;
+}

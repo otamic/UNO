@@ -18,9 +18,11 @@ int main() {
     while (run) {
         run = addCard(gameboard, hand(callPlayers(gameboard), gameboard));
 #ifdef DEBUG
-        show(gameboard);
+        if (run)
+            show(gameboard);
 #endif
     }
+    delete(gameboard);
 
     return 0;
 }

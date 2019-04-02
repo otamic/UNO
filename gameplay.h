@@ -28,8 +28,6 @@ int addCard (void * self, void * card);
 
 static void ddirection (void * self);
 static void next (void * self);
-static void addTop (void * self, void * card);
-static void addRear (void * self, void * card);
 static void drawCard (void * self);
 
 static void desort (int * array, int count);

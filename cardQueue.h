@@ -18,7 +18,8 @@ struct CardQueue {
 };
 
 void qpush (void * self, void * Card);
-void * qtop (const void * self);
+void * qfront (const void * self);
+void * qrear (const void * self);
 void * qpop (void * self);
 int qlength (const void * self);
 

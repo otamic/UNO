@@ -34,11 +34,21 @@ void qpush (void * _self, void * _card) {
     self->rear = (self->rear + 1) % MAX_CQUEUE_NUM;
 }
 
-void * qtop (const void * _self) {
+void * qfront (const void * _self) {
     const struct CardQueue * self = _self;
 
     assert(self->rear != self->front);
     return self->cards[self->front];
+}
+
+void * qrear (const void * _self) {
+    const struct CardQueue * self = _self;
+    int id;
+
+    if (self->rear == self->front)
+        return NULL;
+    id = (self->rear - 1 + MAX_CQUEUE_NUM) % MAX_CQUEUE_NUM;
+    return self->cards[id];
 }
 
 void * qpop (void * _self) {
