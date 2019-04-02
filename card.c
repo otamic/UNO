@@ -66,9 +66,11 @@ void showCard (void * _card) {
                 printf("addTwo ");
                 break;
             case addFour:
+                printColor(skillCard);
                 printf("addFour ");
                 break;
             case wild:
+                printColor(skillCard);
                 printf("wild ");
                 break;
             default:
