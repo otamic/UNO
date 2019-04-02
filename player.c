@@ -26,13 +26,8 @@ static void * Player_ctor (void * _self, va_list * app) {
     return self;
 }
 
-static void * Player_dtor (void * _self) {
-    struct Player * self = _self;
-    return self;
-}
-
 static const struct Class _Player = {
-        & _Player, sizeof(struct Player), Player_ctor, Player_dtor
+        sizeof(struct Player), Player_ctor, 0
 };
 
 const void * Player = & _Player;

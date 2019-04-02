@@ -6,7 +6,13 @@
 #define DEBUG
 #endif
 
+#ifdef DEBUG
 #include <stdio.h>
+#endif
+
+#ifndef TEST
+#define TEST
+#endif
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -29,10 +35,11 @@ static void * Gameboard_ctor (void * _self, va_list * app) {
     self->restCards = UNO_CARDS_NUMBER;
 
     self->players = (void **) malloc(self->playerNum * sizeof(void *));
+#ifdef TEST
     self->players[0] = new(Player, man, 0);
     for (i = 1; i < self->playerNum; i++)
         self->players[i] = new(Player, computer, i);
-
+#endif
     return self;
 }
 
@@ -50,7 +57,7 @@ static void * Gameboard_dtor (void * _self) {
 }
 
 static const struct Class _Gameboard = {
-        & _Gameboard, sizeof(struct Gameboard), Gameboard_ctor, Gameboard_dtor
+        sizeof(struct Gameboard), Gameboard_ctor, Gameboard_dtor
 };
 
 const void * Gameboard = & _Gameboard;
@@ -63,7 +70,7 @@ void * callPlayers (void * _self) {
 
 int addCard (void * _self, void * _card) {
     struct Gameboard * self = _self;
-    struct Class * card = _card;
+    struct Card * card = _card;
 
     if (restCards(callPlayers(self)) == 0) {
         struct Player * player = callPlayers(self);
@@ -87,9 +94,8 @@ int addCard (void * _self, void * _card) {
                qpush(self->cqueue, spop(self->cstack));
             }
         }
-        //addTop(self, card);
         spush(self->cstack, card);
-        if (card->obj == NumberCard) {
+        if (card->class == NumberCard) {
             next(self);
         }
         else {

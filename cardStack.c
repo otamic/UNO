@@ -13,14 +13,8 @@ static void * CardStack_ctor (void * _self, va_list * app) {
     return self;
 }
 
-static void * CardStack_dtor (void * _self) {
-    struct CardStack * self = _self;
-    self->top = 0;
-    return self;
-}
-
 static const struct Class _CardStack = {
-    & _CardStack, sizeof(struct CardStack), CardStack_ctor, CardStack_dtor
+    sizeof(struct CardStack), CardStack_ctor, 0
 };
 
 const void * CardStack = & _CardStack;

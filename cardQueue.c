@@ -13,14 +13,8 @@ static void * CardQueue_ctor (void * _self, va_list * app) {
     return self;
 }
 
-static void * CardQueue_dtor (void * _self) {
-    struct CardQueue * self = _self;
-    self->front = self->rear = 0;
-    return self;
-}
-
 static const struct Class _CardQueue = {
-      & _CardQueue, sizeof(struct CardQueue), CardQueue_ctor, CardQueue_dtor
+      sizeof(struct CardQueue), CardQueue_ctor, 0
 };
 
 const void * CardQueue = & _CardQueue;

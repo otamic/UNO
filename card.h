@@ -6,6 +6,10 @@
 #define UNO_CARD_H
 
 #define UNO_CARDS_NUMBER 112
+#define COLOR_NUM 6
+#define NUMBER_NUM 10
+#define SKILL_NUM 5
+#define MAX_STRING_SIZE 20
 
 extern const void * Card;
 extern const void * NumberCard;

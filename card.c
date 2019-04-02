@@ -7,6 +7,13 @@
 #include "card.h"
 #include "new.h"
 
+static const char Colors[COLOR_NUM][MAX_STRING_SIZE] = { "blue", "green", "red", "yellow" };
+static const char Numbers[NUMBER_NUM][MAX_STRING_SIZE] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char Skills[SKILL_NUM][MAX_STRING_SIZE] = { "skip", "reverse", "addTwo", "addFour", "wild" };
+
+/*
+ * class Card
+ */
 static void * Card_ctor (void * _self, va_list * app) {
     struct Card * self = _self;
 
@@ -16,21 +23,27 @@ static void * Card_ctor (void * _self, va_list * app) {
 }
 
 static const struct Class _Card = {
-        & _Card, sizeof(struct Card), Card_ctor, 0
+        sizeof(struct Card), Card_ctor, 0
 };
 
 const void * Card = & _Card;
 
+/*
+ * class NumberCard
+ */
 static void * NumberCard_ctor (void * _self, va_list * app) {
     return Card_ctor(_self, app);
 }
 
 static const struct Class _NumberCard = {
-        & _NumberCard, sizeof(struct Card), NumberCard_ctor, 0
+        sizeof(struct Card), NumberCard_ctor, 0
 };
 
 const void * NumberCard = & _NumberCard;
 
+/*
+ * class SkillCard
+ */
 static void * SkillCard_ctor (void * _self, va_list * app) {
     struct SkillCard * self = ((const struct Class *) Card)->ctor(_self, app);
 
@@ -39,107 +52,45 @@ static void * SkillCard_ctor (void * _self, va_list * app) {
 }
 
 static const struct Class _SkillCard = {
-        & _SkillCard, sizeof(struct SkillCard), SkillCard_ctor, 0
+        sizeof(struct SkillCard), SkillCard_ctor, 0
 };
 
 const void * SkillCard = & _SkillCard;
 
+/*
+ * Card method
+ */
 void showCard (void * _card) {
-    struct Class * card = _card;
-    if (card->obj == NumberCard) {
+    struct Card * card = _card;
+    if (card->class == NumberCard) {
         printColor(card);
         printNumber(card);
     }
     else {
         struct SkillCard * skillCard = _card;
-        switch (skillCard->skill) {
-            case skip:
-                printColor(skillCard);
-                printf("skip ");
-                break;
-            case reverse:
-                printColor(skillCard);
-                printf("reverse ");
-                break;
-            case addTwo:
-                printColor(skillCard);
-                printf("addTwo ");
-                break;
-            case addFour:
-                printColor(skillCard);
-                printf("addFour ");
-                break;
-            case wild:
-                printColor(skillCard);
-                printf("wild ");
-                break;
-            default:
-                break;
-        }
+        printColor(skillCard);
+        printf("%s ", Skills[skillCard->skill]);
     }
 }
 
 static void printColor (void * _card) {
     struct Card * card = _card;
-    switch (card->color) {
-        case blue:
-            printf("blue ");
-            break;
-        case green:
-            printf("green ");
-            break;
-        case red:
-            printf("red ");
-            break;
-        case yellow:
-            printf("yellow ");
-        default:
-            break;
-    }
+    if (card->color != nulNumber)
+        printf("%s ", Colors[card->color]);
 }
 
 static void printNumber (void * _card) {
     struct Card * card = _card;
-    switch (card->number) {
-        case zero:
-            printf("0 ");
-            break;
-        case one:
-            printf("1 ");
-            break;
-        case two:
-            printf("2 ");
-            break;
-        case three:
-            printf("3 ");
-            break;
-        case four:
-            printf("4 ");
-            break;
-        case five:
-            printf("5 ");
-            break;
-        case six:
-            printf("6 ");
-            break;
-        case seven:
-            printf("7 ");
-            break;
-        case eight:
-            printf("8 ");
-            break;
-        case nine:
-            printf("9 ");
-            break;
-        default:
-            break;
-    }
+    if (card->number != nulNumber)
+        printf("%s ", Numbers[card->number]);
 }
 
 void ** allCards;
 void createCards () {
     enum Color allColor[4] = { blue, green, red, yellow };
     enum Number allNumber[10] = { zero, one, two, three, four, five, six, seven, eight, nine };
+    enum Skill skillGpOne[3] = { skip, reverse, addTwo };
+    enum Skill skiilGpTwo[2] = { wild, addFour };
 
     allCards = (void **) malloc(UNO_CARDS_NUMBER * sizeof(void *));
     int id = 0, i, j, k;
@@ -149,22 +100,13 @@ void createCards () {
                 allCards[id] = new(NumberCard, allColor[i], allNumber[j]);
 
     for (i = 0; i < 4; i++)
-        for (j = 0; j < 2; j++, id++)
-            allCards[id] = new(SkillCard, allColor[i], nulNumber, skip);
+        for (k = 0; k < 3; k++)
+            for (j = 0; j < 2; j++, id++)
+                allCards[id] = new(SkillCard, allColor[i], nulNumber, skillGpOne[k]);
 
     for (i = 0; i < 4; i++)
         for (j = 0; j < 2; j++, id++)
-            allCards[id] = new(SkillCard, allColor[i], nulNumber, reverse);
-
-    for (i = 0; i < 4; i++)
-        for (j = 0; j < 2; j++, id++)
-            allCards[id] = new(SkillCard, allColor[i], nulNumber, addTwo);
-
-    for (i = 0; i < 4; i++, id++)
-        allCards[id] = new(SkillCard, nulColor, nulNumber, wild);
-
-    for (i = 0; i < 4; i++, id++)
-        allCards[id] = new(SkillCard, nulColor, nulNumber, addFour);
+            allCards[id] = new(SkillCard, nulColor, nulNumber, skiilGpTwo[j]);
 }
 
 void setColor (void * _self, enum Color color) {

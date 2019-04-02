@@ -25,7 +25,7 @@ static void * Monitor_dtor (void * _self, va_list * app) {
 }
 
 static const struct Class _Monitor = {
-        & _Monitor, sizeof(struct Monitor), Monitor_dtor, 0
+        sizeof(struct Monitor), Monitor_dtor, 0
 };
 
 const void * Monitor = & _Monitor;
@@ -44,7 +44,7 @@ static void * hand_com (void * _player, void * _frontCard) {
         if (ownCard->color == card->color)
             return putCard(player, i);
     }
-    if (((struct Class *) _frontCard)->obj == NumberCard) {
+    if (card->class == NumberCard) {
         for (i = 0; i < player->cardsNum; i++) {
             ownCard = player->cards[i];
             if (ownCard->number == card->number)
@@ -130,15 +130,15 @@ static int checkCard (void * _card, void * _frontCard) {
         return 0;
     if (card->color == frontCard->color)
         return 0;
-    if (((struct Class *) _card)->obj == NumberCard &&
-            ((struct Class *) _frontCard)->obj == NumberCard &&
+    if (card->class == NumberCard &&
+            frontCard->class == NumberCard &&
                     card->number == frontCard->number)
         return 0;
-    if (((struct Class *) _card)->obj == SkillCard &&
-            ((struct Class *) _frontCard)->obj == SkillCard &&
+    if (card->class == SkillCard &&
+            frontCard->class == SkillCard &&
             ((struct SkillCard *) _card)->skill == ((struct SkillCard *) _frontCard)->skill)
         return 0;
-    if (((struct Class *) _card)->obj == SkillCard &&
+    if (card->class == SkillCard &&
             (((struct SkillCard *) _card)->skill == wild || ((struct SkillCard *) _card)->skill == addFour))
         return 0;
 

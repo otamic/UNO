@@ -25,6 +25,7 @@ static void * hand_com (void * player, void * frontCard);
 static void * hand_man (void * player, void * frontCard);
 static enum Color chose_com (void * player);
 static enum Color chose_man (void * player);
+
 static int checkCard (void * card, void * frontCard);
 
 
