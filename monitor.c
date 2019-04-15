@@ -9,59 +9,51 @@
 #include "new.h"
 #include "player.h"
 
-static void * Monitor_dtor (void * _self, va_list * app) {
-    struct Monitor * self = _self;
-
-    self->cTag = va_arg(* app, enum Control);
-    if (self->cTag == computer) {
-        self->mhand = hand_com;
-        self->mchoseColor = chose_com;
-    }
-    else {
-        self->mhand = hand_man;
-        self->mchoseColor = chose_man;
-    }
-    return self;
-}
-
-static const struct Class _Monitor = {
-        sizeof(struct Monitor), Monitor_dtor, 0
+struct Monitor {
+//    const void * class;
+    enum Control cTag;
+    void * (* m_hand) (void * player, void * frontCard);
+    enum Color (* m_choseColor) (void * player);
 };
 
-const void * Monitor = & _Monitor;
+static void * hand_com (void * player, void * frontCard);
+static void * hand_man (void * player, void * frontCard);
+static enum Color chose_com (void * player);
+static enum Color chose_man (void * player);
+static int checkCard (void * card, void * frontCard);
 
 static void * hand_com (void * _player, void * _frontCard) {
     struct Player * player = _player;
-    struct Card * card = _frontCard;
+    void * card = _frontCard;
     int i;
 
     if (! card)
         return putCard(player, 0);
 
-    struct Card * ownCard;
-    for (i = 0; i < player->cardsNum; i++) {
-        ownCard = player->cards[i];
-        if (ownCard->color == card->color)
+    void * ownCard;
+    for (i = 0; i < restCards(player); i++) {
+        ownCard = ownCards(player, i);
+        if (showColor(ownCard) == showColor(card))
             return putCard(player, i);
     }
-    if (card->class == NumberCard) {
-        for (i = 0; i < player->cardsNum; i++) {
-            ownCard = player->cards[i];
-            if (ownCard->number == card->number)
+    if (isCard(card, NumberCard)) {
+        for (i = 0; i < restCards(player); i++) {
+            ownCard = ownCards(player, i);
+            if (showNumber(ownCard) == showNumber(card))
                 return putCard(player, i);
         }
     }
     else {
-        struct SkillCard * skillCard = _frontCard;
-        struct SkillCard * ownSkillCard;
-        for (i = 0; i < player->cardsNum; i++) {
-            ownSkillCard = player->cards[i];
-            if (ownSkillCard->skill == skillCard->skill)
+        void * skillCard = _frontCard;
+        void * ownSkillCard;
+        for (i = 0; i < restCards(player); i++) {
+            ownSkillCard = ownCards(player, i);
+            if (showSkill(ownSkillCard) == showSkill(skillCard))
                 return putCard(player, i);
         }
-        for (i = 0; i < player->cardsNum; i++) {
-            ownSkillCard = player->cards[i];
-            if (ownSkillCard->skill == wild || ownSkillCard->skill == addFour)
+        for (i = 0; i < restCards(player); i++) {
+            ownSkillCard = ownCards(player, i);
+            if (showSkill(ownSkillCard) == wild || showSkill(ownSkillCard) == addFour)
                 return putCard(player, i);
         }
     }
@@ -74,22 +66,22 @@ static void * hand_man (void * _player, void * _frontCard) {
     int i, chosed;
 
     printf("Now you have cards:\n");
-    for (i = 0; i < player->cardsNum; i++) {
+    for (i = 0; i < restCards(player); i++) {
         printf("%d: ", i);
-        showCard(player->cards[i]);
+        showCard(ownCards(player, i));
         printf("\n");
     }
-    printf("%d: out\n", player->cardsNum);
+    printf("%d: out\n", restCards(player));
 
     do {
 //        printf("Please put your choice: ");
         scanf("%d", &chosed);
-        if (chosed == player->cardsNum)
+        if (chosed == restCards(player))
             break;
-        assert(chosed < player->cardsNum);
-    } while (checkCard(player->cards[chosed], card));
+        assert(chosed < restCards(player));
+    } while (checkCard(ownCards(player, chosed), card));
 
-    if (chosed == player->cardsNum)
+    if (chosed == restCards(player))
         return NULL;
     else
         return putCard(player, chosed);
@@ -123,24 +115,50 @@ static enum Color chose_man (void * _player) {
 }
 
 static int checkCard (void * _card, void * _frontCard) {
-    struct Card * card = _card;
-    struct Card * frontCard = _frontCard;
+    void * card = _card;
+    void * frontCard = _frontCard;
 
     if (!frontCard)
         return 0;
-    if (card->color == frontCard->color)
+    if (showColor(card) == showColor(frontCard))
         return 0;
-    if (card->class == NumberCard &&
-            frontCard->class == NumberCard &&
-                    card->number == frontCard->number)
+    if (isCard(card, NumberCard) &&
+            isCard(frontCard, NumberCard) &&
+                    showNumber(card) == showNumber(frontCard))
         return 0;
-    if (card->class == SkillCard &&
-            frontCard->class == SkillCard &&
-            ((struct SkillCard *) _card)->skill == ((struct SkillCard *) _frontCard)->skill)
+    if (isCard(card, SkillCard) &&
+            isCard(frontCard, SkillCard) &&
+            showSkill(card) == showSkill(frontCard))
         return 0;
-    if (card->class == SkillCard &&
-            (((struct SkillCard *) _card)->skill == wild || ((struct SkillCard *) _card)->skill == addFour))
+    if (isCard(card, SkillCard) &&
+            (showSkill(card) == wild || showSkill(card) == addFour))
         return 0;
 
     return 1;
+}
+
+static const struct Monitor manMonitor = {
+        man, hand_man, chose_man
+};
+
+static const struct Monitor comMonitor = {
+        computer, hand_com, chose_com
+};
+
+void * mhand (void * player, void * frontCard) {
+    switch (getControl(player)) {
+        case man:
+            return manMonitor.m_hand(player, frontCard);
+        case computer:
+            return comMonitor.m_hand(player, frontCard);
+    }
+}
+
+enum Color mChoseColor (void * player) {
+    switch (getControl(player)) {
+        case man:
+            return manMonitor.m_choseColor(player);
+        case computer:
+            return comMonitor.m_choseColor(player);
+    }
 }

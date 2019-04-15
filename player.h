@@ -14,19 +14,14 @@ extern const void * Player;
 enum Control { computer = 0, man };
 #endif
 
-struct Player {
-    const void * class;
-    int id;
-    int cardsNum;
-    void * cards[UNO_CARDS_NUMBER];
-    enum Control cTag;
-};
-
 void * hand (void * self, void * gameboard);
 enum Color choseColor (void * self);
 int restCards (void * self);
 void getCard (void * self, void * card);
 void * putCard (void * self, int id);
+enum Control getControl (void * player);
+int getId (void * player);
+void * ownCards (void * player, int i);
 void callUNO (void * self);
 void catchUNO (void * self, void * other);
 #endif //UNO_PLAYER_H

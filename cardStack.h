@@ -11,15 +11,9 @@
 
 extern const void * CardStack;
 
-struct CardStack {
-    const void * class;
-    struct Card * cards[UNO_CARDS_NUMBER];
-    int top;
-};
-
-void spush (void * self, void * card);
-void * stop (const void * self);
-void * spop (void * self);
-int slength (const void * self);
+void spush (void * stack, void * card);
+void * stop (const void * stack);
+void * spop (void * stack);
+int slength (const void * stack);
 
 #endif //UNO_CARDSTACK_H

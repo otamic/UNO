@@ -14,19 +14,9 @@ extern const void * Monitor;
 enum Control { computer = 0, man };
 #endif
 
-struct Monitor {
-    const void * class;
-    enum Control cTag;
-    void * (* mhand) (void * player, void * frontCard);
-    enum Color (* mchoseColor) (void * player);
-};
+void * mhand(void * player, void * frontCard);
+enum Color mChoseColor (void * player);
 
-static void * hand_com (void * player, void * frontCard);
-static void * hand_man (void * player, void * frontCard);
-static enum Color chose_com (void * player);
-static enum Color chose_man (void * player);
-
-static int checkCard (void * card, void * frontCard);
 
 
 #endif //UNO_MONITOR_H

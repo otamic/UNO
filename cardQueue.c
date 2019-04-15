@@ -7,6 +7,12 @@
 #include "cardQueue.h"
 #include "new.h"
 
+struct CardQueue {
+    const void * class;
+    void * cards[MAX_CQUEUE_NUM];
+    int front, rear;
+};
+
 static void * CardQueue_ctor (void * _self, va_list * app) {
     struct CardQueue * self = _self;
     self->front = self->rear = 0;
@@ -21,7 +27,7 @@ const void * CardQueue = & _CardQueue;
 
 void qpush (void * _self, void * _card) {
     struct CardQueue * self = _self;
-    struct Card * card = _card;
+    void * card = _card;
 
     assert(((self->rear + 1) % MAX_CQUEUE_NUM) != self->front);
     self->cards[self->rear] = card;

@@ -7,6 +7,12 @@
 #include "cardStack.h"
 #include "new.h"
 
+struct CardStack {
+    const void * class;
+    void * cards[UNO_CARDS_NUMBER];
+    int top;
+};
+
 static void * CardStack_ctor (void * _self, va_list * app) {
     struct CardStack * self = _self;
     self->top = -1;
@@ -21,7 +27,7 @@ const void * CardStack = & _CardStack;
 
 void spush (void * _self, void * _card) {
     struct CardStack * self = _self;
-    struct Card * card = _card;
+    void * card = _card;
 
     assert(self->top != MAX_CSTACK_NUM -1);
     self->cards[++ self->top] = card;

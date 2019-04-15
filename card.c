@@ -4,13 +4,31 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include "card.h"
 #include "new.h"
+
+struct Card {
+    const void * class;
+    enum Color color;
+    enum Number number;
+};
+
+struct NumberCard {
+    const struct Card _;
+};
+
+struct SkillCard {
+    const struct Card _;
+    enum Skill skill;
+};
 
 static const char Colors[COLOR_NUM][MAX_STRING_SIZE] = { "blue", "green", "red", "yellow" };
 static const char Numbers[NUMBER_NUM][MAX_STRING_SIZE] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 static const char Skills[SKILL_NUM][MAX_STRING_SIZE] = { "skip", "reverse", "addTwo", "addFour", "wild" };
 
+static void printColor (void * card);
+static void printNumber (void * card);
 /*
  * class Card
  */
@@ -117,4 +135,25 @@ void setColor (void * _self, enum Color color) {
 void setNumber (void * _self, enum Number number) {
     struct Card * self = _self;
     self->number = number;
+}
+
+enum Color showColor (void * _self) {
+    struct Card * self = _self;
+    return self->color;
+}
+
+enum Number showNumber (void * _self) {
+    struct Card * self = _self;
+    return self->number;
+}
+
+enum Skill showSkill (void * _self) {
+    assert(isCard(_self, SkillCard));
+    struct SkillCard * self = _self;
+    return self->skill;
+}
+
+int isCard(void * _self, const void * class) {
+    struct Card * self = _self;
+    return self->class == class ? 1 : 0;
 }

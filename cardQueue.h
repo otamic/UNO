@@ -11,17 +11,11 @@
 
 extern const void * CardQueue;
 
-struct CardQueue {
-    const void * class;
-    struct Card * cards[MAX_CQUEUE_NUM];
-    int front, rear;
-};
-
-void qpush (void * self, void * Card);
-void * qfront (const void * self);
-void * qrear (const void * self);
-void * qpop (void * self);
-int qlength (const void * self);
+void qpush (void * queue, void * Card);
+void * qfront (const void * queue);
+void * qrear (const void * queue);
+void * qpop (void * queue);
+int qlength (const void * queue);
 
 
 #endif //UNO_CARDQUEUE_H
