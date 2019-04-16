@@ -11,11 +11,14 @@ extern const void * Gameboard;
 
 enum Direction { CW, CCW };
 
-void showGameboard(void *self);
-void start (void * self);
-void * callPlayers (void * self);
-int addCard (void * self, void * card);
-void * showStack (void * gameBoard);
+void start (void * gameBoard);
+void play (void * gameBoard);
+
+void * callPlayers (void * gameBoard);
+void * getStack(void * gameBoard);
+int addCard (void * gameBoard, void * card);
+
+void showGameboard(void * gameBoard);
 
 
 #endif //UNO_GAMEPLAY_H

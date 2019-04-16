@@ -20,14 +20,19 @@ enum Color { blue = 0, green, red, yellow, nulColor, rdmColor };
 enum Number { zero = 0, one, two, three, four, five, six, seven, eight, nine, nulNumber };
 enum Skill { skip = 0, reverse, addTwo, addFour, wild };
 
-void setColor (void * self, enum Color color);
+int isCard(void * card, const void * class);
+
+void setColor (void * card, enum Color color);
 enum Color showColor (void * card);
-void setNumber (void * self, enum Number number);
+void setNumber (void * card, enum Number number);
 enum Number showNumber (void * card);
 enum Skill showSkill (void * skillCard);
-int isCard(void * card, const void * class);
-void printCard(void *card);
 
+void printCard(void * card);
+
+/*
+ * Call this only once to initialize all basic cards
+ */
 void createCards();
 
 #endif //UNO_CARD_H

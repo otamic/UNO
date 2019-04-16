@@ -10,18 +10,9 @@
 
 int main() {
 
-    int run = 1;
-    createCards();
     void * gameboard = new(Gameboard, NUM_PLAYERS);
     start(gameboard);
-
-    while (run) {
-        run = addCard(gameboard, hand(callPlayers(gameboard), gameboard));
-#ifdef DEBUG
-        if (run)
-            showGameboard(gameboard);
-#endif
-    }
+    play(gameboard);
     delete(gameboard);
 
     return 0;

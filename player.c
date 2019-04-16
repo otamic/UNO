@@ -44,7 +44,7 @@ const void * Player = & _Player;
 void * hand (void * _self, void * gameboard) {
     struct Player * self = _self;
 
-    void * frontCard = stop(showStack(gameboard));
+    void * frontCard = stop(getStack(gameboard));
     void * resCard = mhand(self, frontCard);
 
 #ifdef DEBUG

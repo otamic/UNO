@@ -87,7 +87,7 @@ void printCard(void * card) {       // ?? straight use the variable or open meth
 }
 
 static void printColor (void * card) {
-    if (showNumber(card) != nulColor)
+    if (showColor(card) != nulColor)
         printf("%s ", Colors[showColor(card)]);
 }
 

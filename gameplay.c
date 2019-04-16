@@ -89,7 +89,7 @@ int addCard (void * _self, void * card) {
     struct Gameboard * self = _self;
 
     if (restCards(callPlayers(self)) == 0) {
-        struct Player * player = callPlayers(self);
+        void * player = callPlayers(self);
 #ifdef DEBUG
         printf("Game over! The winner is player%d\n", getId(player));
 #endif
@@ -118,7 +118,7 @@ int addCard (void * _self, void * card) {
             switch (showSkill(card)) {
                 case skip:
                     next(self);
-                    drawCard(self);
+                    getCard(callPlayers(self), self->cqueue);
                     next(self);
                     break;
                 case reverse:
@@ -197,6 +197,7 @@ void start (void * _self) {
     struct Gameboard * self = _self;
     int i, j, numList[UNO_CARDS_NUMBER];
 
+    createCards();
     for (i = 0; i < UNO_CARDS_NUMBER; i++)
         numList[i] = i;
     desort(numList, UNO_CARDS_NUMBER);
@@ -241,7 +242,18 @@ void showGameboard(void *_self) {
     printf("\n\n");
 }
 
-void * showStack (void * _self) {
+void * getStack(void * _self) {
     struct Gameboard * self = _self;
     return self->cstack;
+}
+
+void play (void * gameboard) {
+    int run = 1;
+    while (run) {
+        run = addCard(gameboard, hand(callPlayers(gameboard), gameboard));
+#ifdef DEBUG
+        if (run)
+            showGameboard(gameboard);
+#endif
+    }
 }
