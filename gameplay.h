@@ -11,7 +11,7 @@ extern const void * Gameboard;
 
 enum Direction { CW, CCW };
 
-void show (void * self);
+void showGameboard(void *self);
 void start (void * self);
 void * callPlayers (void * self);
 int addCard (void * self, void * card);

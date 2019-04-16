@@ -19,7 +19,7 @@ int main() {
         run = addCard(gameboard, hand(callPlayers(gameboard), gameboard));
 #ifdef DEBUG
         if (run)
-            show(gameboard);
+            showGameboard(gameboard);
 #endif
     }
     delete(gameboard);

@@ -25,9 +25,8 @@ static const struct Class _CardStack = {
 
 const void * CardStack = & _CardStack;
 
-void spush (void * _self, void * _card) {
+void spush (void * _self, void * card) {
     struct CardStack * self = _self;
-    void * card = _card;
 
     assert(self->top != MAX_CSTACK_NUM -1);
     self->cards[++ self->top] = card;

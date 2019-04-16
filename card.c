@@ -78,29 +78,22 @@ const void * SkillCard = & _SkillCard;
 /*
  * Card method
  */
-void showCard (void * _card) {
-    struct Card * card = _card;
-    if (card->class == NumberCard) {
-        printColor(card);
+void printCard(void * card) {       // ?? straight use the variable or open method
+    printColor(card);
+    if (isCard(card, NumberCard))
         printNumber(card);
-    }
-    else {
-        struct SkillCard * skillCard = _card;
-        printColor(skillCard);
-        printf("%s ", Skills[skillCard->skill]);
-    }
+    else
+        printf("%s ", Skills[showSkill(card)]);
 }
 
-static void printColor (void * _card) {
-    struct Card * card = _card;
-    if (card->color != nulNumber)
-        printf("%s ", Colors[card->color]);
+static void printColor (void * card) {
+    if (showNumber(card) != nulColor)
+        printf("%s ", Colors[showColor(card)]);
 }
 
-static void printNumber (void * _card) {
-    struct Card * card = _card;
-    if (card->number != nulNumber)
-        printf("%s ", Numbers[card->number]);
+static void printNumber (void * card) {
+    if (showNumber(card) != nulNumber)
+        printf("%s ", Numbers[showNumber(card)]);
 }
 
 void ** allCards;

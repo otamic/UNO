@@ -25,9 +25,8 @@ static const struct Class _CardQueue = {
 
 const void * CardQueue = & _CardQueue;
 
-void qpush (void * _self, void * _card) {
+void qpush (void * _self, void * card) {
     struct CardQueue * self = _self;
-    void * card = _card;
 
     assert(((self->rear + 1) % MAX_CQUEUE_NUM) != self->front);
     self->cards[self->rear] = card;

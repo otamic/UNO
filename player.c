@@ -41,9 +41,8 @@ static const struct Class _Player = {
 const void * Player = & _Player;
 
 // 人工控制和手动输入可变为静态全局的
-void * hand (void * _self, void * _gameboard) {
+void * hand (void * _self, void * gameboard) {
     struct Player * self = _self;
-    void * gameboard = _gameboard;
 
     void * frontCard = stop(showStack(gameboard));
     void * resCard = mhand(self, frontCard);
@@ -51,7 +50,7 @@ void * hand (void * _self, void * _gameboard) {
 #ifdef DEBUG
     if (resCard) {
         printf("Player%d has put: ", self->id);
-        showCard(resCard);
+        printCard(resCard);
     }
     else
         printf("Player%d didn't put a card!", self->id);
@@ -75,9 +74,8 @@ int restCards (void * _self) {
     return rest;
 }
 
-void getCard (void * _self, void * _card) {
+void getCard (void * _self, void * card) {
     struct Player * self = _self;
-    struct Card * card = _card;
 
     self->cards[self->cardsNum++] = card;
 }

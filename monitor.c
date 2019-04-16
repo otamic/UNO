@@ -1,6 +1,9 @@
 //
 // Created by 冯彦澄 on 2019-03-31.
 //
+#ifndef DEBUG
+#define DEBUG
+#endif
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -22,53 +25,47 @@ static enum Color chose_com (void * player);
 static enum Color chose_man (void * player);
 static int checkCard (void * card, void * frontCard);
 
-static void * hand_com (void * _player, void * _frontCard) {
-    struct Player * player = _player;
-    void * card = _frontCard;
+static void * hand_com (void * player, void * frontCard) {
     int i;
 
-    if (! card)
+    if (! frontCard)
         return putCard(player, 0);
 
     void * ownCard;
     for (i = 0; i < restCards(player); i++) {
         ownCard = ownCards(player, i);
-        if (showColor(ownCard) == showColor(card))
+        if (showColor(ownCard) == showColor(frontCard))
             return putCard(player, i);
     }
-    if (isCard(card, NumberCard)) {
+    if (isCard(frontCard, NumberCard)) {
         for (i = 0; i < restCards(player); i++) {
             ownCard = ownCards(player, i);
-            if (showNumber(ownCard) == showNumber(card))
+            if (showNumber(ownCard) == showNumber(frontCard))
                 return putCard(player, i);
         }
     }
     else {
-        void * skillCard = _frontCard;
-        void * ownSkillCard;
         for (i = 0; i < restCards(player); i++) {
-            ownSkillCard = ownCards(player, i);
-            if (showSkill(ownSkillCard) == showSkill(skillCard))
+            ownCard = ownCards(player, i);
+            if (showSkill(ownCard) == showSkill(frontCard))
                 return putCard(player, i);
         }
         for (i = 0; i < restCards(player); i++) {
-            ownSkillCard = ownCards(player, i);
-            if (showSkill(ownSkillCard) == wild || showSkill(ownSkillCard) == addFour)
+            ownCard = ownCards(player, i);
+            if (showSkill(ownCard) == wild || showSkill(ownCard) == addFour)
                 return putCard(player, i);
         }
     }
     return NULL;
 }
 
-static void * hand_man (void * _player, void * _frontCard) {
-    struct Player * player = _player;
-    struct Card * card = _frontCard;
+static void * hand_man (void * player, void * frontCard) {
     int i, chosed;
 
     printf("Now you have cards:\n");
     for (i = 0; i < restCards(player); i++) {
         printf("%d: ", i);
-        showCard(ownCards(player, i));
+        printCard(ownCards(player, i));
         printf("\n");
     }
     printf("%d: out\n", restCards(player));
@@ -79,7 +76,7 @@ static void * hand_man (void * _player, void * _frontCard) {
         if (chosed == restCards(player))
             break;
         assert(chosed < restCards(player));
-    } while (checkCard(ownCards(player, chosed), card));
+    } while (checkCard(ownCards(player, chosed), frontCard));
 
     if (chosed == restCards(player))
         return NULL;
@@ -87,13 +84,17 @@ static void * hand_man (void * _player, void * _frontCard) {
         return putCard(player, chosed);
 }
 
-static enum Color chose_com (void * _player) {
-    struct Player * player = _player;
+static enum Color chose_com (void * player) {
+#ifdef DEBUG
     return blue;
+#endif
+
+#ifndef DEBUG
+    /* *** */
+#endif
 }
 
-static enum Color chose_man (void * _player) {
-    struct Player * player = _player;
+static enum Color chose_man (void * player) {
     int chosed;
 
     printf("Please chose a color: 1.blue 2.green 3.red 4.yellow\n");
@@ -114,10 +115,7 @@ static enum Color chose_man (void * _player) {
     }
 }
 
-static int checkCard (void * _card, void * _frontCard) {
-    void * card = _card;
-    void * frontCard = _frontCard;
-
+static int checkCard (void * card, void * frontCard) {
     if (!frontCard)
         return 0;
     if (showColor(card) == showColor(frontCard))

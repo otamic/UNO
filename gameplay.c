@@ -16,6 +16,7 @@
 
 #include <stdarg.h>
 #include <stdlib.h>
+#include <time.h>
 #include "gameplay.h"
 #include "new.h"
 #include "cardQueue.h"
@@ -84,9 +85,8 @@ void * callPlayers (void * _self) {
     return self->players[self->playerNow];
 }
 
-int addCard (void * _self, void * _card) {
+int addCard (void * _self, void * card) {
     struct Gameboard * self = _self;
-    void * card = _card;
 
     if (restCards(callPlayers(self)) == 0) {
         struct Player * player = callPlayers(self);
@@ -96,17 +96,17 @@ int addCard (void * _self, void * _card) {
         return 0;
     }
 
-    if (_card == 0) {
+    if (card == 0) {
         drawCard(self);
         next(self);
     }
     else {
         if (slength(self->cstack)) {
-            struct Card * frontNow = stop(self->cstack);
-            if (isCard(frontNow, NumberCard) ||
-               (isCard(frontNow, SkillCard) &&
-               showSkill(frontNow) != addFour && showSkill(frontNow) != addTwo
-                       && showNumber(frontNow) == nulNumber)) {
+            void * frontNowCard = stop(self->cstack);
+            if (isCard(frontNowCard, NumberCard) ||
+               (isCard(frontNowCard, SkillCard) &&
+               showSkill(frontNowCard) != addFour && showSkill(frontNowCard) != addTwo
+                       && showNumber(frontNowCard) == nulNumber)) {
                qpush(self->cqueue, spop(self->cstack));
             }
         }
@@ -115,17 +115,16 @@ int addCard (void * _self, void * _card) {
             next(self);
         }
         else {
-            struct SkillCard * skillCard = _card;
-            switch (showSkill(skillCard)) {
+            switch (showSkill(card)) {
                 case skip:
                     next(self);
                     drawCard(self);
                     next(self);
                     break;
                 case reverse:
-                   ddirection(self);
-                   next(self);
-                   break;
+                    ddirection(self);
+                    next(self);
+                    break;
                 case addTwo:
                     next(self);
                     break;
@@ -166,12 +165,11 @@ static void drawCard (void * _self) {
     void * tcard = stop(cardStack);
 
     while (slength(cardStack)) {
-        struct Card * card = spop(cardStack);
+        void * card = spop(cardStack);
         int i;
 
         if (isCard(card, SkillCard)) {
-            struct SkillCard * skillCard = (struct SkillCard *) card;
-            switch (showSkill(skillCard)) {
+            switch (showSkill(card)) {
                 case addTwo:
                     if (showNumber(card) == nulNumber) {
                         setNumber(card, zero);
@@ -214,7 +212,12 @@ void start (void * _self) {
 #define RAND_CONSTANT_A 10
 
 static void desort (int * array, int count) {
+#ifdef DEBUG
     srand(0);
+#endif
+#ifndef DEBUG
+    srand((unsigned) time(0));
+#endif
     int i, j, interval;
     for (i = 0; i < RAND_LOOP; i++) {
         interval = rand() % (rand() % RAND_CONSTANT_A + 1) + 1;
@@ -228,13 +231,13 @@ static void desort (int * array, int count) {
     array[count - 1] = interval;
 }
 
-void show (void * _self) {
+void showGameboard(void *_self) {
     struct Gameboard * self = _self;
     int i;
     for (i = 0; i < self->playerNum; i++)
         printf("Player%d: %d\n", i, restCards(self->players[i]));
     printf("Front card: ");
-    showCard(stop(self->cstack));
+    printCard(stop(self->cstack));
     printf("\n\n");
 }
 
