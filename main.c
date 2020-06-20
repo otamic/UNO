@@ -1,10 +1,10 @@
 #define DEBUG
 
 #include <stdio.h>
-#include "card.h"
+
 #include "new.h"
 #include "gameplay.h"
-#include "player.h"
+
 
 #define NUM_PLAYERS 5
 
